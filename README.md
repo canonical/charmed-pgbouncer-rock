@@ -32,7 +32,7 @@ docker run --rm -it <username>/charmed-pgbouncer:<tag>
 ```
 
 ## License
-The PostgreSQL rock is free software, distributed under the Apache
+The PgBouncer rock is free software, distributed under the Apache
 Software License, version 2.0. See
 [LICENSE](https://github.com/canonical/charmed-pgbouncer-rock/blob/1-22.04/licenses/LICENSE-rock)
 for more information.
