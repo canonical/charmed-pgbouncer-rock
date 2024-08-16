@@ -1,0 +1,62 @@
+name: charmed-pgbouncer
+base: ubuntu@22.04
+version: '1.21'
+summary: PgBouncer in a rock.
+description: |
+    The PgBouncer rock is created using the
+    charmed-pgbouncer-snap and includes all of the
+    components needed to run PgBouncer in your Kubernetes
+    cluster.
+license: Apache-2.0
+platforms:
+    amd64:
+    arm64:
+
+parts:
+    pgbouncer-snap:
+        plugin: nil
+        stage-snaps:
+            - charmed-pgbouncer/1/edge
+        overlay-packages:
+            - ca-certificates
+            - tzdata
+            - logrotate
+    non-root-user:
+        plugin: nil
+        after: [pgbouncer-snap]
+        overlay-script: |
+            # Create a user in the $CRAFT_OVERLAY chroot
+            groupadd -R $CRAFT_OVERLAY -g  584788 postgres
+            useradd -R $CRAFT_OVERLAY -M -r -g postgres -u 584788 postgres
+        override-prime: |
+            craftctl default
+            # This is only needed until this bug is resolved with pebble
+            # https://github.com/canonical/pebble/issues/189
+            mkdir -p $CRAFT_PRIME/home/postgres
+            array=( .bash_logout .bashrc .profile )
+            for i in "${array[@]}"
+            do
+                cp /etc/skel/"$i" $CRAFT_PRIME/home/postgres
+                chown 584788 $CRAFT_PRIME/home/postgres/"$i"
+            done
+            mkdir -p $CRAFT_PRIME/var/log/pgbouncer
+            chown -R 584788 $CRAFT_PRIME/var/log/pgbouncer
+            mkdir -p $CRAFT_PRIME/var/lib/pgbouncer
+            chown -R 584788 $CRAFT_PRIME/var/lib/pgbouncer
+            # Generate dpkg.query
+            mkdir -p $CRAFT_PRIME/usr/share/rocks
+            echo "# os-release" > $CRAFT_PRIME/usr/share/rocks/dpkg.query
+            cat \
+            ${CRAFT_PROJECT_DIR}/../bundles/ubuntu-22.04/rootfs/etc/os-release \
+            >> $CRAFT_PRIME/usr/share/rocks/dpkg.query
+            echo "# dpkg-query" >> $CRAFT_PRIME/usr/share/rocks/dpkg.query
+            declare -a fields
+            fields+=('${db:Status-Abbrev}')
+            fields+=('${binary:Package}')
+            fields+=('${Version}')
+            fields+=('${source:Package}')
+            fields+=('${Source:Version}')
+            printf -v dpkg_ops '%s,' "${fields[@]}"
+            dpkg-query -W -f "${dpkg_ops}\n" \
+            --root=${CRAFT_PROJECT_DIR}/../parts/pgbouncer-snap/layer/ \
+            >> $CRAFT_PRIME/usr/share/rocks/dpkg.query
