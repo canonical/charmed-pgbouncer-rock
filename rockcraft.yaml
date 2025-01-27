@@ -21,6 +21,7 @@ parts:
             - ca-certificates
             - tzdata
             - logrotate
+            - libreadline8
     non-root-user:
         plugin: nil
         after: [pgbouncer-snap]
