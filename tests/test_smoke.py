@@ -29,7 +29,7 @@ def test_all_apps():
         }
 
         apps = [
-            "/usr/bin/pgbouncer",
+            "/usr/sbin/pgbouncer",
             "/usr/bin/psql",
         ]
 
@@ -59,7 +59,7 @@ def test_version():
                 "docker",
                 "run",
                 "--entrypoint",
-                "/usr/bin/pgbouncer",
+                "/usr/sbin/pgbouncer",
                 f"{name}:test",
                 "--version",
             ])
