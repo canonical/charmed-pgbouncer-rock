@@ -64,6 +64,7 @@ def test_version():
                 "--version",
             ])
             .decode()
-            .split(" ")[2]
+            .split()[1]
+            .split(".")[:-1]
         )
         assert version == app_version
