@@ -54,7 +54,7 @@ def test_version():
         rockcraft = yaml.safe_load(file)
         name = rockcraft["name"]
         version = rockcraft["version"]
-        app_version = (
+        app_version = ".".join(
             subprocess.check_output([
                 "docker",
                 "run",
