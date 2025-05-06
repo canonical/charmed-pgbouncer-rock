@@ -11,13 +11,13 @@ python = "^3.12"
 optional = true
 
 [tool.poetry.group.format.dependencies]
-ruff = "^0.11.7"
+ruff = "^0.11.8"
 
 [tool.poetry.group.lint]
 optional = true
 
 [tool.poetry.group.lint.dependencies]
-yamllint = "^1.37.0"
+yamllint = "^1.37.1"
 codespell = "^2.4.1"
 
 [tool.poetry.group.unit]
