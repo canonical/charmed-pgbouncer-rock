@@ -27,8 +27,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Install tox & poetry
+      - name: Install rockcraft, tox & poetry
         run: |
+          snap install rockcraft
           pipx install tox
           pipx install poetry
       - name: Download rock(s)
