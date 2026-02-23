@@ -18,6 +18,7 @@ jobs:
   build:
     name: Build rock
     uses: canonical/data-platform-workflows/.github/workflows/build_rock.yaml@v42.0.0
+    permissions: {}
 
   release:
     name: Release rock
@@ -36,6 +37,7 @@ jobs:
       - build
       # Run after release so that rock cannot be (maliciously) modified between build & release
       - release
+    permissions: {}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
