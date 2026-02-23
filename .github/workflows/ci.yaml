@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v6
       - name: Install rockcraft, tox & poetry
         run: |
-          sudo snap install rockcraft
+          sudo snap install rockcraft --classic
           pipx install tox
           pipx install poetry
       - name: Download rock(s)
