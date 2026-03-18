@@ -1,0 +1,40 @@
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+name: Trivy Security Scanner
+on:
+  workflow_call:
+
+permissions:
+  security-events: write  # Required for uploading Trivy SARIF results
+
+jobs:
+  scan:
+    name: Trivy scan
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+      - name: Install required dependencies
+        run: |
+          # rockcraft
+          sudo snap install rockcraft --classic --edge
+
+          # jq
+          sudo snap install jq
+      - name: Find rock tag
+        id: rock-tag
+        run: |
+          echo "tag=$(rockcraft.skopeo list-tags docker://ghcr.io/canonical/charmed-pgbouncer | jq -r '.Tags | map(select(startswith("1.")))| max_by(split(".")[1] | split("-")[0] | tonumber)')" >> "$GITHUB_OUTPUT"
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          image-ref: "ghcr.io/canonical/charmed-postgresql:${{steps.rock-tag.outputs.tag }}"
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "HIGH,CRITICAL"
+          limit-severities-for-sarif: true
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: "trivy-results.sarif"
