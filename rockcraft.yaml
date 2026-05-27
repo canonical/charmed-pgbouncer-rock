@@ -17,7 +17,7 @@ parts:
         plugin: nil
         stage-snaps:
             - charmed-pgbouncer/1/edge
-        overlay-packages:
+        stage-packages:
             - ca-certificates
             - tzdata
             - logrotate
