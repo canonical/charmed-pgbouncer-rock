@@ -256,4 +256,4 @@ dev = ["doc8", "flake8", "flake8-import-order", "rstcheck[sphinx]", "ruff", "sph
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "f87eb985d5046c907c174e189865504ccfcb99c390e3aa0972d32e3ee6bbd161"
+content-hash = "297c3d02dd07d5fdfaf686158a2a4119355bcc16d8be527a104469cbce94df2b"
